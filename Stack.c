@@ -39,7 +39,6 @@ enum ERRORS{
     REALLOCAION_FAULT  = -37
 };
 
-
 struct Stack{
     double* data;
     int size;
@@ -184,7 +183,7 @@ int Verify(struct Stack* stk1)
     if ((*stk1).data == NULL)            return DATA_NULL;
     if ((*stk1).size > MAX_SIZE)         return STRANGE_SIZE;
     if ((*stk1).size > (*stk1).capacity) return SIZE_OVER_CAPACITY;
-    if ((*stk1).size < 0)               return ZERO_SIZE;
+    if ((*stk1).size < 0)                return ZERO_SIZE;
     
     if ((*stk1).capacity == 0)           return ZERO_CAPACITY;
     return 0;
