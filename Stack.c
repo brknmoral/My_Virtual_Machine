@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+//typedef double Stack_elem;
+typedef int    Stack_elem;
+
+
 #define DATA_START 7 
 #define INCREASE 2
 #define DECREASE 
@@ -16,6 +20,7 @@
 #define RESET   "\033[0m"
 
 
+
 #define TO_VERIFY(stk1)                                                        \
 {                                                                              \
     int err = Verify(stk1);                                                    \
@@ -27,7 +32,7 @@
     }                                                                          \
 }
 
-const double poison_value = -17;
+const Stack_elem poison_value = -17;
 
 enum ERRORS{
     STRUCT_NULL        = -13,
@@ -40,44 +45,44 @@ enum ERRORS{
 };
 
 struct Stack{
-    double* data;
+    Stack_elem* data;
     int size;
     int capacity;
 };
 
 int StackInit     (struct Stack* stk1);
-int StackPush     (struct Stack* stk1, double number);
+int StackPush     (struct Stack* stk1, Stack_elem number);
 void StackDestroy (struct Stack* stk1);
-int StackPop      (struct Stack* stk1, double* number_stp);
+int StackPop      (struct Stack* stk1, Stack_elem* number_stp);
 int Verify        (struct Stack* stk1);
 int StackDump     (struct Stack* stk1);
 int StackOutput   (struct Stack stk1);
-void BB_MemSet    (double* start, int count_elem);
+void BB_MemSet    (Stack_elem* start, int count_elem);
 
 
-int main(void)
-{
-    struct Stack stk1 = {};
-    StackInit(&stk1);
+// int main(void)
+// {
+//     struct Stack stk1 = {};
+//     StackInit(&stk1);
     
-    StackPush(&stk1, 10.0);
-    StackPush(&stk1, 20.0);
-    StackPush(&stk1, 30.0);
-    StackPush(&stk1, 40.0);
-    StackPush(&stk1, 50.0);
-    StackPush(&stk1, 60.0);
-    StackPush(&stk1, 70.0);
-    StackPush(&stk1, 80.0);
-    StackPush(&stk1, 90.0);
+//     StackPush(&stk1, 10.0);
+//     StackPush(&stk1, 20.0);
+//     StackPush(&stk1, 30.0);
+//     StackPush(&stk1, 40.0);
+//     StackPush(&stk1, 50.0);
+//     StackPush(&stk1, 60.0);
+//     StackPush(&stk1, 70.0);
+//     StackPush(&stk1, 80.0);
+//     StackPush(&stk1, 90.0);
 
-    StackOutput(stk1);
-   //printf("------------------------\n");
-    //StackPop(&stk1, &number_stp);
-    //StackOutput(stk1);
+//     StackOutput(stk1);
+//    //printf("------------------------\n");
+//     //StackPop(&stk1, &number_stp);
+//     //StackOutput(stk1);
 
-    StackDestroy(&stk1);
-    return 0;
-}
+//     StackDestroy(&stk1);
+//     return 0;
+// }
 
 int StackInit(struct Stack* stk1)
 {
@@ -90,7 +95,7 @@ int StackInit(struct Stack* stk1)
         return ZERO_CAPACITY;
     }
 
-    (*stk1).data = (double*) calloc((size_t)(*stk1).capacity, sizeof((*stk1).data[0]));
+    (*stk1).data = (Stack_elem*) calloc((size_t)(*stk1).capacity, sizeof((*stk1).data[0]));
 
     if ((*stk1).data == NULL)
     {
@@ -104,19 +109,19 @@ int StackInit(struct Stack* stk1)
     return DATA_START;
 }
 
-void BB_MemSet(double* start, int count_elem)
+void BB_MemSet(Stack_elem* start, int count_elem)
 {
     int i = 0;
     for(;  i < count_elem ; i++)
     {
-        printf("Before : %p -> <%lg>\n", start + i, *(start + i));
+        printf("Before : %p -> <%d>\n", start + i, *(start + i));
         *(start + i) = poison_value;
-        printf("After  : %p -> <%lg>\n", start + i, *(start + i));
+        printf("After  : %p -> <%d>\n", start + i, *(start + i));
     }
     return;
 }
 
-int StackPush(struct Stack* stk1, double number)
+int StackPush(struct Stack* stk1, Stack_elem number)
 {
     TO_VERIFY(stk1);
     
@@ -124,7 +129,7 @@ int StackPush(struct Stack* stk1, double number)
     {
         int new_capacity = (*stk1).capacity * INCREASE;
         printf("From %d to %d\n", (*stk1).capacity , new_capacity);
-        double* tmp = (double*) realloc((*stk1).data, (size_t)new_capacity * sizeof((*stk1).data[0]));
+        Stack_elem* tmp = (Stack_elem*) realloc((*stk1).data, (size_t)new_capacity * sizeof((*stk1).data[0]));
         
         if (tmp == NULL) return REALLOCAION_FAULT;
         
@@ -149,16 +154,17 @@ int StackPush(struct Stack* stk1, double number)
     return 0;
 }
 
-int StackPop(struct Stack* stk1, double* number_stp)
+int StackPop(struct Stack* stk1, Stack_elem* number_stkpop)
 {
+    printf("StackPOP\n");
     TO_VERIFY(stk1);
 
     printf("Size befor pop : %d\n", (*stk1).size);
     (*stk1).size--;
     printf("Size pop elem  : %d\n", (*stk1).size);
 
-    *number_stp = (*stk1).data[(*stk1).size];
-    printf("Num_stp = %lg\n", *number_stp);
+    *number_stkpop = (*stk1).data[(*stk1).size];
+    printf("Num_stp = %d\n", *number_stkpop);
 
     (*stk1).data[(*stk1).size] = poison_value;
 
@@ -200,11 +206,11 @@ int StackOutput(struct Stack stk1)
         if (stk1.data[i] == poison_value){
         #pragma GCC diagnostic warning "-Wfloat-equal"
 
-            printf(RED "PLOHOESLOVO " RESET YELLOW "<%p> -> data[%d] = %lg" RESET RED "*\n" RESET,
+            printf(RED "PLOHOESLOVO " RESET YELLOW "<%p> -> data[%d] = %d" RESET RED "*\n" RESET,
                  &stk1.data[i], i, stk1.data[i]);
         }
         else
-            printf(RED "PLOHOESLOVO " RESET YELLOW "<%p> -> data[%d] = %lg" RESET GREEN "*\n" RESET, &stk1.data[i], i, stk1.data[i]);
+            printf(RED "PLOHOESLOVO " RESET YELLOW "<%p> -> data[%d] = %d" RESET GREEN "*\n" RESET, &stk1.data[i], i, stk1.data[i]);
     }
     return 0;
 }

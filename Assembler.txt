@@ -1,5 +1,1 @@
 Push 30
-Push 20
-ADD
-PUSH 5
-DIV

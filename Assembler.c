@@ -20,11 +20,12 @@
 
 enum {
     PUSH  = 1,
-    ADD = 3,
-    SUB = 4,
-    DIV = 5,
-    OUT = 6,
-    HLT = 7, 
+    POP   = 2,
+    ADD   = 3,
+    SUB   = 4,
+    DIV   = 5,
+    OUT   = 6,
+    HLT   = 7, 
     NO_SUCH_COMMAND = -17
 };
 
@@ -50,10 +51,10 @@ int  main(void)
     if (index == NULL) { printf("index ptr NULL\n");return -1;}
 
     FillIndexindex(buffer, index, str_count);
-    for (int i = 0; i < 4; i ++)
-    {
-        printf(">>> <%p> -> index[%d] = %p ->> {%s}\n", index + i, i, *(index + i), *(index + i));
-    }
+    // for (int i = 0; i < 4; i ++)
+    // {
+    //     printf(">>> <%p> -> index[%d] = %p ->> {%s}\n", index + i, i, *(index + i), *(index + i));
+    // }
 
     int* result_data = (int*)calloc(CODE_SIZE, sizeof(result_data[0]));
     //int count_commands = CountNumString(buffer);
@@ -61,17 +62,17 @@ int  main(void)
     int result_data_size = ParcingIndexMas(index, result_data, str_count);
     MasOutput(result_data, result_data_size);
 
-    int data[] = {1, 30, 1, 20, 3, 1, 5, 5, 1, 4, 4, 6, 7};
+    // int data[] = {1, 30, 1, 20, 3, 1, 5, 5, 1, 4, 4, 6, 7};
 
     FILE* f1 = fopen("TextExamp le.txt", "wt");
-    for (size_t i = 0; i < DATA_SIZE; i++)
+    for (int i = 0; i < result_data_size; i++)
     {
-        fprintf(f1, "%d ", data[i]);
+        fprintf(f1, "%d ", result_data[i]);
     }
     fclose(f1);
     
     FILE* f2 = fopen("BinExample", "wb");
-    fwrite(data, DATA_SIZE, sizeof(data[0]), f2);
+    fwrite(result_data, (size_t)result_data_size, sizeof(result_data[0]), f2);
     fclose(f2);
 
 
@@ -238,6 +239,7 @@ int FillIndexindex(char* text, char* index[], int str_count)
         }
         cur_pos++;
     }
+    printf("\n");
     printf("Mas Index output:\n");
     for (int i = 0; i < idx; i++){
         printf("[%d] %p -> <%s>\n", i, index[i], index[i]);
@@ -264,8 +266,8 @@ int ParcingIndexMas(char** index, int end_data[], int str_count)
     int cur_adress = 0;
     for (int line_num = 0; line_num < str_count; line_num++)
     {
-        $DBG printf("Line number = %d\n", line_num);
-        $DBG printf("$$$ index <%p> -> index[%d] = %p -> {%s} $$$\n", index + line_num, line_num, *(index + line_num), *(index + line_num));
+        //$DBG printf("Line number = %d\n", line_num);
+        //$DBG printf("$$$ index <%p> -> index[%d] = %p -> {%s} $$$\n", index + line_num, line_num, *(index + line_num), *(index + line_num));
         char command[COMMAND_SIZE] = {};
         
         int params = sscanf(index[line_num], "%15s %d", command, &current_param);
@@ -300,6 +302,7 @@ int ParcingIndexMas(char** index, int end_data[], int str_count)
 int CheckCommand(char command[])
 {
     DO_CMD_ (PUSH);
+    DO_CMD_ (POP);
     DO_CMD_ (ADD);
     DO_CMD_ (SUB);
     DO_CMD_ (DIV);

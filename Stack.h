@@ -1,6 +1,9 @@
 #ifndef STACK_HEADER
 #define STACK_HEADER
 
+//typedef double Stack_elem;
+typedef int    Stack_elem;
+
 #define DATA_START 7 
 #define INCREASE 2
 #define DECREASE 
@@ -38,13 +41,13 @@ enum ERRORS{
 
 
 struct Stack{
-    double* data;
+    Stack_elem* data;
     int size;
     int capacity;
 };
 
 int StackInit    (struct Stack* stk1, int data_capacity);
-int StackPush    (struct Stack* stk1, double number);
+int StackPush     (struct Stack* stk1, Stack_elem number);
 void StackDestroy(struct Stack* stk1);
 int StackPop     (struct Stack* stk1, double* number_stp);
 int Verify       (struct Stack* stk1);
